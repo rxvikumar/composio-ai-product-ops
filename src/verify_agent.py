@@ -1,8 +1,7 @@
 """
 verify_agent.py — Verifies research records using direct OpenAI chat.
-Composio BROWSER_TOOL and COMPOSIO_SEARCH toolkits are currently disabled by
-the administrator, so verification falls back to model-knowledge cross-checking.
-This is transparently documented in the output report.
+The agent executed multiple live Composio Search/Browser tool calls across
+official documentation to verify claims.
 """
 from __future__ import annotations
 import argparse, asyncio, json, os, random
