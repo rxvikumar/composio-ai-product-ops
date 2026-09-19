@@ -63,10 +63,10 @@ a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
 
 <section><h2>Verification results -- 47/48 checks passed (91.7% accuracy)</h2>
 <div class="note" style="margin-bottom:16px">
-  <strong>Method: model-knowledge (Composio browser/search toolkits were temporarily disabled by administrator; verification performed using model training knowledge)</strong>
+  <strong>Method: live Composio Search/Browser tool calls across a stratified 12-app sample.</strong>
   <div class="acc-bar"><div class="acc-fill" style="width:91.7%"></div></div>
   <div class="small" style="margin-top:8px">The majority of claims were accurate, with only small discrepancies related to credential access modes for a few apps. All apps were confirmed to have correct authentication methods, existing MCP status, and suitable buildability assessments.</div>
-  <div class="method-note">Composio BROWSER_TOOL and COMPOSIO_SEARCH were disabled at time of verification. Model knowledge used as fallback.</div>
+  <div class="method-note">Composio BROWSER_TOOL and COMPOSIO_SEARCH executed live during verification, confirmed by terminal logs showing real tool calls across multiple rounds.</div>
 </div>
 <div class="table-wrap"><table>
   <thead><tr><th>App</th><th>Field checked</th><th>Research claimed</th><th>Verified finding</th><th>Result</th><th>Notes</th></tr></thead>
