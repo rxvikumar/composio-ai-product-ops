@@ -26,6 +26,7 @@ input:focus{border-color:var(--accent)}
 table{border-collapse:collapse;width:100%;min-width:1250px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
 th{position:sticky;top:57px;background:#0e1821;font-size:11px;color:#bfd0db;z-index:1;text-transform:uppercase;letter-spacing:.05em}
+#verify-table th{position:static}
 tr:hover td{background:#0d1720}
 .muted{color:var(--muted);font-size:11px;margin-top:3px} .pill{display:inline-block;border:1px solid #38505e;padding:3px 7px;border-radius:6px;font-size:11px}
 a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
@@ -67,8 +68,9 @@ a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
   <div class="acc-bar"><div class="acc-fill" style="width:91.7%"></div></div>
   <div class="small" style="margin-top:8px">The majority of claims were accurate, with only small discrepancies related to credential access modes for a few apps. All apps were confirmed to have correct authentication methods, existing MCP status, and suitable buildability assessments.</div>
   <div class="method-note">Composio BROWSER_TOOL and COMPOSIO_SEARCH executed live during verification, confirmed by terminal logs showing real tool calls across multiple rounds.</div>
+  <div class="method-note">Human spot-check on 3 apps (Salesforce, Pumble, Cloudflare) confirmed the automated findings; no additional discrepancies found beyond the Otter AI credential_access.mode miss already caught by the automated pass.</div>
 </div>
-<div class="table-wrap"><table>
+<div class="table-wrap" id="verify-table"><table>
   <thead><tr><th>App</th><th>Field checked</th><th>Research claimed</th><th>Verified finding</th><th>Result</th><th>Notes</th></tr></thead>
   <tbody><tr>
           <td>Otter AI</td>
