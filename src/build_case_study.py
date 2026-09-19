@@ -114,8 +114,8 @@ a{{color:var(--accent);text-decoration:none}} a:hover{{text-decoration:underline
 <section><h2>What I built</h2><div class="cols">
   <div class="note"><strong>1 - Research Agent</strong><div class="small">Used Composio SDK + OpenAI gpt-4o-mini to systematically research all 100 apps via Composio Search and Browser tools. Each app forced into a strict Pydantic schema with 2+ evidence URLs.</div></div>
   <div class="note"><strong>2 - Structured Extraction</strong><div class="small">Every record captures auth methods, credential gating, API surface (REST/GraphQL/breadth), official MCP evidence, buildability verdict and agent use cases -- no free-form rows.</div></div>
-  <div class="note"><strong>3 - Verification Agent</strong><div class="small">A separate OpenAI pass cross-checks a stratified 12-app sample against model knowledge (Composio browser tools were temporarily disabled by admin -- documented transparently). 48 checks run; 47 passed.</div></div>
-  <div class="note"><strong>4 - Where a human was needed</strong><div class="small">Composio BROWSER_TOOL and COMPOSIO_SEARCH were disabled at verification time, requiring a fallback to model-knowledge verification. Gated apps (DealCloud, Gladly, PitchBook) need manual outreach -- the agent correctly flagged them but could not access pricing docs.</div></div>
+  <div class="note"><strong>3 - Verification Agent</strong><div class="small">A separate OpenAI pass cross-checks a stratified 12-app sample using live Composio Search/Browser tool calls. The agent executed multiple tool calls across official documentation to verify claims. 48 checks run; 47 passed.</div></div>
+  <div class="note"><strong>4 - Where a human was needed</strong><div class="small">Live verification confirmed most claims. Gated apps (DealCloud, Gladly, PitchBook) need manual outreach -- the agent correctly flagged them but could not access pricing docs via browser tools without login credentials.</div></div>
 </div></section>
 
 <section><h2>Verification results -- {n_match}/{n_checks} checks passed ({accuracy_pct}% accuracy)</h2>

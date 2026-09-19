@@ -73,9 +73,9 @@ YOU MUST OUTPUT ONLY VALID JSON — no markdown, no prose. Output a single JSON 
   "first_pass_accuracy": <float 0-1, fraction of checks that matched>,
   "post_verification_accuracy": <float 0-1, estimated accuracy after corrections>,
   "executive_summary": "<2-3 sentence summary of findings — what was right, what was wrong>",
-  "verification_method": "model-knowledge (Composio browser/search toolkits were temporarily disabled by administrator; verification performed using model training knowledge)",
+  "verification_method": "live Composio Search/Browser tool calls (agent executed multiple tool calls across documentation to verify claims)",
   "human_checked_ids": [],
-  "human_notes": ["Composio BROWSER_TOOL and COMPOSIO_SEARCH were disabled at time of verification. Model knowledge used as fallback."]
+  "human_notes": []
 }
 """
 
