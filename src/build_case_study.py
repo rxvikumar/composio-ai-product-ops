@@ -142,7 +142,7 @@ a{{color:var(--accent);text-decoration:none}} a:hover{{text-decoration:underline
 <script>function filterRows(q){{q=q.toLowerCase();document.querySelectorAll('#rows tr').forEach(r=>r.style.display=(r.dataset.search||'').includes(q)?'':'none')}}</script>
 </body></html>'''
 
-    out = ROOT/"output/case_study.html"
+    out = ROOT/"output/index.html"
     out.write_text(html_doc, encoding="utf-8")
     print(f"Written: {out}  ({n_apps} apps, {n_match}/{n_checks} verified, {accuracy_pct}% accuracy)")
 
