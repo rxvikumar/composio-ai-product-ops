@@ -1,0 +1,15 @@
+{
+  "reviewer": "",
+  "checked_at_utc": "",
+  "human_checked_ids": [1, 11, 21, 31, 41, 51],
+  "checks": [
+    {
+      "app_id": 1,
+      "fields_checked": ["auth_methods", "credential_access", "api_surface", "existing_mcp"],
+      "result": "pass | correction | inconclusive",
+      "correction": "",
+      "source_urls": [],
+      "notes": ""
+    }
+  ]
+}

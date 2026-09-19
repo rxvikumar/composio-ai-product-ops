@@ -1,0 +1,12 @@
+[
+  {
+    "id": 15,
+    "reason": "evidence-dedup-below-min",
+    "detail": "Evidence collapsed to 1 unique URLs after dedup (schema min=2)"
+  },
+  {
+    "id": 39,
+    "reason": "evidence-dedup-below-min",
+    "detail": "Evidence collapsed to 1 unique URLs after dedup (schema min=2)"
+  }
+]

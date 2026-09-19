@@ -1,0 +1,132 @@
+{
+  "n": 99,
+  "auth_distribution": {
+    "OAuth2": 77,
+    "API key": 88,
+    "Bearer/token": 42,
+    "Unknown": 12,
+    "Other": 24,
+    "Basic": 2,
+    "JWT": 2,
+    "Session/cookie": 1
+  },
+  "credential_access": {
+    "unknown": 18,
+    "self-serve-free": 61,
+    "self-serve-paid": 15,
+    "gated-needs-outreach": 3,
+    "admin-approval": 1,
+    "mixed": 1
+  },
+  "buildability": {
+    "toolkit-ready": 87,
+    "gated-needs-outreach": 5,
+    "toolkit-ready-with-constraints": 7
+  },
+  "api_breadth": {
+    "broad": 88,
+    "moderate": 6,
+    "narrow": 5
+  },
+  "official_mcp_count": 90,
+  "category_stats": [
+    {
+      "category": "AI, Research and Media-native",
+      "count": 10,
+      "ready_pct": 90.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "CRM and Sales",
+      "count": 10,
+      "ready_pct": 70.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Communications and Messaging",
+      "count": 10,
+      "ready_pct": 90.0,
+      "gated_pct": 10.0
+    },
+    {
+      "category": "Data, SEO and Scraping",
+      "count": 10,
+      "ready_pct": 100.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Developer, Infra and Data platforms",
+      "count": 10,
+      "ready_pct": 100.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Ecommerce",
+      "count": 10,
+      "ready_pct": 90.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Finance and Fintech",
+      "count": 10,
+      "ready_pct": 80.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Marketing, Ads, Email and Social",
+      "count": 9,
+      "ready_pct": 100.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Productivity and Project Management",
+      "count": 10,
+      "ready_pct": 100.0,
+      "gated_pct": 0.0
+    },
+    {
+      "category": "Support and Helpdesk",
+      "count": 10,
+      "ready_pct": 60.0,
+      "gated_pct": 0.0
+    }
+  ],
+  "common_blockers": [
+    [
+      "Requires sales contact for access.",
+      3
+    ],
+    [
+      "No free tier available.",
+      2
+    ],
+    [
+      "Limited API documentation available.",
+      1
+    ],
+    [
+      "Limited features compared to commercial CRMs.",
+      1
+    ],
+    [
+      "Requires admin approval for access.",
+      1
+    ],
+    [
+      "Some advanced features may require specific configurations or permissions.",
+      1
+    ],
+    [
+      "Requires a paid plan for full access.",
+      1
+    ],
+    [
+      "Access to the API requires approval and potentially a paid plan.",
+      1
+    ],
+    [
+      "Limited API capabilities for advanced integrations.",
+      1
+    ]
+  ]
+}

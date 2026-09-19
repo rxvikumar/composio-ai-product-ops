@@ -1,0 +1,9 @@
+composio>=0.21.0
+composio-google-adk>=0.21.0
+composio-anthropic>=0.21.0
+google-adk>=2.9.0
+anthropic>=1.6.0
+pydantic>=2.10
+python-dotenv>=1.0
+rich>=13.9
+tenacity>=8.2,<10

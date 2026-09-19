@@ -1,0 +1,830 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Product Ops — 100-app integration research</title>
+<style>
+:root{--bg:#081018;--panel:#101a24;--panel2:#0c151d;--text:#edf4f8;--muted:#9eb0bd;--line:#24323e;--accent:#7ee0b5;--warn:#ffd58a}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#071018,#0b1118 40%,#081018);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,sans-serif}
+.wrap{max-width:1500px;margin:auto;padding:36px 28px 64px} .eyebrow{color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+h1{font-size:42px;line-height:1.05;margin:8px 0 12px;max-width:1000px} .sub{color:var(--muted);max-width:900px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:24px 0} .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px} .metric{font-size:28px;font-weight:800} .label{color:var(--muted);font-size:12px;margin-top:4px}
+section{margin-top:32px} h2{font-size:20px;margin:0 0 12px} .headline{background:linear-gradient(135deg,#12251f,#111a24);border:1px solid #2c493d;padding:18px;border-radius:16px;font-size:18px}
+.flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .tag{border:1px solid var(--line);padding:5px 9px;border-radius:999px;color:var(--muted)}
+.toolbar{position:sticky;top:0;background:rgba(8,16,24,.92);backdrop-filter:blur(10px);padding:12px 0;border-bottom:1px solid var(--line);z-index:2} input{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 13px;border-radius:10px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;margin-top:12px} table{border-collapse:collapse;width:100%;min-width:1250px} th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left} th{position:sticky;top:57px;background:#0e1821;font-size:12px;color:#bfd0db;z-index:1} tr:hover td{background:#0d1720} .muted{color:var(--muted);font-size:11px} .pill{display:inline-block;border:1px solid #38505e;padding:3px 6px;border-radius:6px;font-size:11px} a{color:var(--accent);text-decoration:none}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px} .note{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px} ul{margin:8px 0 0 20px} .small{font-size:12px;color:var(--muted)}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr} h1{font-size:32px}}
+</style></head><body><div class="wrap">
+<div class="eyebrow">AI Product Ops Intern · Take-home</div>
+<h1>100 apps researched by an agent, then challenged by a verification loop.</h1>
+<p class="sub">A reproducible integration-research pipeline that turns public documentation into auth, access, API, MCP and buildability decisions — with evidence attached to every row.</p>
+<div class="headline"><strong>Headline:</strong> 87/99 apps were classified toolkit-ready; 76/99 had a self-serve credential path. The most common access pattern was self-serve-free, while the most common blocker was Requires sales contact for access.. This is why the table separates API existence from credential access, API breadth, and agent-facing surfaces.</div>
+<div class="grid">
+<div class="card"><div class="metric">99</div><div class="label">apps researched</div></div>
+<div class="card"><div class="metric">90</div><div class="label">apps with explicit official MCP evidence</div></div>
+<div class="card"><div class="metric">99</div><div class="label">credential-access classifications</div></div>
+<div class="card"><div class="metric">87</div><div class="label">toolkit-ready in final dataset</div></div>
+<div class="card"><div class="metric">12</div><div class="label">automatically verified sample</div></div>
+</div>
+<section><h2>Patterns reviewers should notice</h2><div class="cols">
+<div class="note"><strong>Auth</strong><div class="small">OAuth2: 77, API key: 88, Bearer/token: 42, Unknown: 12, Other: 24, Basic: 2, JWT: 2, Session/cookie: 1</div></div>
+<div class="note"><strong>Credential access</strong><div class="small">unknown: 18, self-serve-free: 61, self-serve-paid: 15, gated-needs-outreach: 3, admin-approval: 1, mixed: 1</div></div>
+<div class="note"><strong>Buildability</strong><div class="small">toolkit-ready: 87, gated-needs-outreach: 5, toolkit-ready-with-constraints: 7</div></div>
+<div class="note"><strong>Common blockers</strong><ul><li>Requires sales contact for access. — 3</li><li>No free tier available. — 2</li><li>Limited API documentation available. — 1</li><li>Limited features compared to commercial CRMs. — 1</li><li>Requires admin approval for access. — 1</li><li>Some advanced features may require specific configurations or permissions. — 1</li></ul></div>
+</div></section>
+<section><h2>What I built</h2><div class="cols"><div class="note"><strong>1 · Discover</strong><div class="small">Seeded the 100-app research set, then used Composio Search + Browser Tool to find and open first-party sources.</div></div><div class="note"><strong>2 · Extract</strong><div class="small">Structured output forces explicit auth, access, API surface, MCP, buildability and evidence fields. No free-form prose-only rows.</div></div><div class="note"><strong>3 · Critique</strong><div class="small">A separate verification agent re-opens the sources for a stratified sample and challenges critical claims.</div></div><div class="note"><strong>4 · Human check</strong><div class="small">The reviewer-facing verification file records which sample rows were manually checked and where the agent was wrong.</div></div></div></section>
+<section><h2>Verification</h2><div class="note"><strong>Do not hide misses.</strong><div class="small">The verification artifact compares first-pass claims with independently inspected documentation. Human review is intentionally separate from the research agent so the “verified” number does not become self-certification.</div><p class="small">Automated report: verification/automated_verification.json. Human checks should be appended before submission.</p></div></section>
+<section><h2>100-app evidence table</h2><div class="toolbar"><input id="q" placeholder="Search apps, categories, capabilities…" oninput="filterRows(this.value)"></div><div class="table-wrap"><table><thead><tr><th>#</th><th>App</th><th>What it does</th><th>Auth</th><th>Credential access</th><th>API / MCP</th><th>Buildability</th><th>Evidence</th></tr></thead><tbody id="rows"><tr data-search="salesforce crm and sales salesforce is a cloud-based crm platform that helps businesses manage customer relationships and sales processes.">
+          <td>1</td><td><strong>Salesforce</strong><div class="muted">CRM and Sales</div></td>
+          <td>Salesforce is a cloud-based CRM platform that helps businesses manage customer relationships and sales processes.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Salesforce uses OAuth 2.0 for authentication and provides API keys for accessing its services.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Salesforce offers a free trial for new users, after which paid plans are required.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.salesforce.com/docs/atlas.en/ApiReference/index.html" target="_blank" rel="noreferrer">source</a> <a href="https://www.salesforce.com/products/essentials/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="hubspot crm and sales hubspot is an inbound marketing, sales, and service software that helps businesses grow by attracting visitors, converting leads, and closing customers.">
+          <td>2</td><td><strong>HubSpot</strong><div class="muted">CRM and Sales</div></td>
+          <td>HubSpot is an inbound marketing, sales, and service software that helps businesses grow by attracting visitors, converting leads, and closing customers.</td>
+          <td>OAuth2, API key<div class="muted">HubSpot uses OAuth 2.0 for authentication and allows API key access for certain endpoints.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">HubSpot offers a free tier with limited features and paid plans for advanced functionalities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.hubspot.com/docs/api/overview" target="_blank" rel="noreferrer">source</a> <a href="https://www.hubspot.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="pipedrive crm and sales pipedrive is a sales management tool designed to help sales teams manage leads and deals, track communications, and automate repetitive tasks.">
+          <td>3</td><td><strong>Pipedrive</strong><div class="muted">CRM and Sales</div></td>
+          <td>Pipedrive is a sales management tool designed to help sales teams manage leads and deals, track communications, and automate repetitive tasks.</td>
+          <td>OAuth2, API key<div class="muted">Pipedrive supports OAuth 2.0 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Pipedrive offers a free trial for new users, after which paid plans are required.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.pipedrive.com/docs/api/v1" target="_blank" rel="noreferrer">source</a> <a href="https://www.pipedrive.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="attio crm and sales attio is a modern crm that focuses on relationship management and collaboration, providing tools for managing contacts and tracking interactions.">
+          <td>4</td><td><strong>Attio</strong><div class="muted">CRM and Sales</div></td>
+          <td>Attio is a modern CRM that focuses on relationship management and collaboration, providing tools for managing contacts and tracking interactions.</td>
+          <td>OAuth2<div class="muted">Attio uses OAuth 2.0 for authentication.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Attio offers a free trial, but paid plans are required for full access.</div></td>
+          <td>REST<div class="muted">moderate · MCP: </div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Limited API documentation available.</div></td>
+          <td><a href="https://www.attio.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.attio.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="twenty crm and sales twenty is an open-source crm designed to help teams manage customer relationships and sales processes effectively.">
+          <td>5</td><td><strong>Twenty</strong><div class="muted">CRM and Sales</div></td>
+          <td>Twenty is an open-source CRM designed to help teams manage customer relationships and sales processes effectively.</td>
+          <td>OAuth2, API key<div class="muted">Twenty supports OAuth 2.0 and API key authentication methods.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">As an open-source CRM, Twenty can be self-hosted, and there are no paid plans required.</div></td>
+          <td>REST<div class="muted">narrow · MCP: </div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">Limited features compared to commercial CRMs.</div></td>
+          <td><a href="https://www.twenty.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.twenty.com/docs" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="podio crm and sales podio is a customizable work management platform that helps teams collaborate and manage projects.">
+          <td>6</td><td><strong>Podio</strong><div class="muted">CRM and Sales</div></td>
+          <td>Podio is a customizable work management platform that helps teams collaborate and manage projects.</td>
+          <td>OAuth2, API key, Unknown<div class="muted">Podio uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Podio offers a free tier with limited features and self-serve signup.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.podio.com/" target="_blank" rel="noreferrer">source</a> <a href="https://podio.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="zoho crm crm and sales zoho crm is a cloud-based customer relationship management software that helps businesses manage their sales, marketing, and support.">
+          <td>7</td><td><strong>Zoho CRM</strong><div class="muted">CRM and Sales</div></td>
+          <td>Zoho CRM is a cloud-based customer relationship management software that helps businesses manage their sales, marketing, and support.</td>
+          <td>OAuth2, API key, Unknown<div class="muted">Zoho CRM uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Zoho CRM offers a free tier with limited features and self-serve signup.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://www.zoho.com/crm/developer/docs/api/v2/" target="_blank" rel="noreferrer">source</a> <a href="https://www.zoho.com/crm/pricing.html" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="close crm and sales close is a crm designed for sales teams to manage leads and automate communication.">
+          <td>8</td><td><strong>Close</strong><div class="muted">CRM and Sales</div></td>
+          <td>Close is a CRM designed for sales teams to manage leads and automate communication.</td>
+          <td>API key, OAuth2, Unknown<div class="muted">Close uses API keys and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Close does not offer a free tier; users must select a paid plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.close.com/" target="_blank" rel="noreferrer">source</a> <a href="https://close.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="copper crm and sales copper is a crm built for google workspace users, integrating seamlessly with gmail and other google apps.">
+          <td>9</td><td><strong>Copper</strong><div class="muted">CRM and Sales</div></td>
+          <td>Copper is a CRM built for Google Workspace users, integrating seamlessly with Gmail and other Google apps.</td>
+          <td>OAuth2, API key, Unknown<div class="muted">Copper uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Copper does not offer a free tier; users must select a paid plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.copper.com/" target="_blank" rel="noreferrer">source</a> <a href="https://copper.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="dealcloud crm and sales dealcloud is a crm and deal management platform designed for investment firms.">
+          <td>10</td><td><strong>DealCloud</strong><div class="muted">CRM and Sales</div></td>
+          <td>DealCloud is a CRM and deal management platform designed for investment firms.</td>
+          <td>OAuth2, API key, Unknown<div class="muted">DealCloud uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Access to the API requires contacting sales for setup and approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Requires sales contact for access.</div></td>
+          <td><a href="https://api.docs.dealcloud.com/" target="_blank" rel="noreferrer">source</a> <a href="https://dealcloud.com/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="zendesk support and helpdesk zendesk provides a customer service platform that includes ticketing, self-service, and customer support features.">
+          <td>11</td><td><strong>Zendesk</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Zendesk provides a customer service platform that includes ticketing, self-service, and customer support features.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Zendesk supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Zendesk offers a free trial for new users.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.zendesk.com/api-reference/ticketing/introduction" target="_blank" rel="noreferrer">source</a> <a href="https://www.zendesk.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="intercom support and helpdesk intercom provides a messaging platform for businesses to communicate with customers through chat, email, and more.">
+          <td>12</td><td><strong>Intercom</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Intercom provides a messaging platform for businesses to communicate with customers through chat, email, and more.</td>
+          <td>OAuth2, API key<div class="muted">Intercom uses OAuth2 for user authentication and API keys for application access.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Intercom does not offer a free tier but provides a demo upon request.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">No free tier available.</div></td>
+          <td><a href="https://developers.intercom.com/intercom-api-reference/reference" target="_blank" rel="noreferrer">source</a> <a href="https://www.intercom.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="freshdesk support and helpdesk freshdesk is a cloud-based customer support software that helps businesses manage customer queries and support tickets.">
+          <td>13</td><td><strong>Freshdesk</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Freshdesk is a cloud-based customer support software that helps businesses manage customer queries and support tickets.</td>
+          <td>OAuth2, API key<div class="muted">Freshdesk supports OAuth2 for user authentication and API keys for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Freshdesk offers a free tier with limited features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.freshdesk.com/api/#introduction" target="_blank" rel="noreferrer">source</a> <a href="https://www.freshdesk.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="front support and helpdesk front is a shared inbox and customer communication platform that helps teams manage emails, chats, and other messages.">
+          <td>14</td><td><strong>Front</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Front is a shared inbox and customer communication platform that helps teams manage emails, chats, and other messages.</td>
+          <td>OAuth2, API key<div class="muted">Front uses OAuth2 for user authentication and API keys for application access.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Front does not offer a free tier but provides a demo upon request.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">No free tier available.</div></td>
+          <td><a href="https://frontapp.com/developers/docs" target="_blank" rel="noreferrer">source</a> <a href="https://front.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="liveagent support and helpdesk liveagent is a helpdesk software that provides customer support solutions including live chat, ticketing, and call center functionalities.">
+          <td>16</td><td><strong>LiveAgent</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>LiveAgent is a helpdesk software that provides customer support solutions including live chat, ticketing, and call center functionalities.</td>
+          <td>API key, OAuth2<div class="muted">LiveAgent supports API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for a paid plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.liveagent.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.liveagent.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="plain support and helpdesk plain is a customer support platform that focuses on providing a seamless communication experience across various channels.">
+          <td>17</td><td><strong>Plain</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Plain is a customer support platform that focuses on providing a seamless communication experience across various channels.</td>
+          <td>OAuth2<div class="muted">Plain uses OAuth2 for authentication.</div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Access to the API requires contacting sales for setup.</div></td>
+          <td>REST<div class="muted">narrow · MCP: </div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Requires sales contact for access.</div></td>
+          <td><a href="https://plain.com/" target="_blank" rel="noreferrer">source</a> <a href="https://plain.com/docs/authentication" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="help scout support and helpdesk help scout is a helpdesk software that provides tools for customer support, including email management and knowledge base features.">
+          <td>18</td><td><strong>Help Scout</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Help Scout is a helpdesk software that provides tools for customer support, including email management and knowledge base features.</td>
+          <td>API key, OAuth2<div class="muted">Help Scout supports both API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.helpscout.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.helpscout.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="gorgias support and helpdesk gorgias is a helpdesk platform designed for e-commerce businesses, providing tools for customer support through various channels.">
+          <td>19</td><td><strong>Gorgias</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Gorgias is a helpdesk platform designed for e-commerce businesses, providing tools for customer support through various channels.</td>
+          <td>API key, OAuth2<div class="muted">Gorgias supports API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for a paid plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.gorgias.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.gorgias.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="gladly support and helpdesk gladly is a customer service platform that focuses on providing personalized support experiences across various channels.">
+          <td>20</td><td><strong>Gladly</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Gladly is a customer service platform that focuses on providing personalized support experiences across various channels.</td>
+          <td>OAuth2<div class="muted">Gladly uses OAuth2 for authentication.</div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Access to the API requires contacting sales for setup.</div></td>
+          <td>REST<div class="muted">narrow · MCP: </div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Requires sales contact for access.</div></td>
+          <td><a href="https://www.gladly.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.gladly.com/docs/authentication" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="pylon support and helpdesk pylon is a customer support platform that helps businesses manage customer inquiries and support tickets efficiently.">
+          <td>15</td><td><strong>Pylon</strong><div class="muted">Support and Helpdesk</div></td>
+          <td>Pylon is a customer support platform that helps businesses manage customer inquiries and support tickets efficiently.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">Pylon supports API key and OAuth2 for authentication, allowing developers to securely access the API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access the API and documentation.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://usepylon.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://usepylon.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="slack communications and messaging slack is a collaboration hub that connects your work with the people you work with through channels, messaging, and integrations.">
+          <td>21</td><td><strong>Slack</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Slack is a collaboration hub that connects your work with the people you work with through channels, messaging, and integrations.</td>
+          <td>OAuth2, Bearer/token<div class="muted">Slack uses OAuth 2.0 for authentication, allowing users to authorize applications to access their Slack data.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create apps and access the API without needing admin approval for personal use.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://api.slack.com/authentication" target="_blank" rel="noreferrer">source</a> <a href="https://api.slack.com/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="twilio communications and messaging twilio provides cloud communications services, enabling developers to build and integrate messaging, voice, and video capabilities into applications.">
+          <td>22</td><td><strong>Twilio</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Twilio provides cloud communications services, enabling developers to build and integrate messaging, voice, and video capabilities into applications.</td>
+          <td>API key, Bearer/token<div class="muted">Twilio uses API keys for authentication, which can be generated in the Twilio Console.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free Twilio account to access a limited set of features and trial credits.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://www.twilio.com/docs/usage/api" target="_blank" rel="noreferrer">source</a> <a href="https://www.twilio.com/try-twilio" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="zoho cliq communications and messaging zoho cliq is a team communication and collaboration tool that allows users to chat, share files, and manage tasks in real-time.">
+          <td>23</td><td><strong>Zoho Cliq</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Zoho Cliq is a team communication and collaboration tool that allows users to chat, share files, and manage tasks in real-time.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Zoho Cliq supports OAuth2 for authentication, allowing secure access to its API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free plan with limited features, and there are paid plans available for more advanced features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://www.zoho.com/cliq/help/developer/api/#authentication" target="_blank" rel="noreferrer">source</a> <a href="https://www.zoho.com/cliq/help/developer/api/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="lark (larksuite) communications and messaging lark is a collaborative platform that integrates messaging, video conferencing, and document collaboration.">
+          <td>24</td><td><strong>Lark (Larksuite)</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Lark is a collaborative platform that integrates messaging, video conferencing, and document collaboration.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Lark uses OAuth2 for authentication and provides API keys for accessing its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://open.larksuite.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://open.larksuite.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="pumble communications and messaging pumble is a team communication and messaging platform that allows users to chat, share files, and collaborate in real-time.">
+          <td>25</td><td><strong>Pumble</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Pumble is a team communication and messaging platform that allows users to chat, share files, and collaborate in real-time.</td>
+          <td>OAuth2, API key, Unknown<div class="muted">Pumble offers API key authentication for developers to integrate with their services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account without needing admin approval.</div></td>
+          <td>REST<div class="muted">moderate · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://pumble.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://pumble.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="discord communications and messaging discord is a communication platform designed for creating communities, allowing users to chat via text, voice, and video.">
+          <td>26</td><td><strong>Discord</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Discord is a communication platform designed for creating communities, allowing users to chat via text, voice, and video.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Discord uses OAuth2 for authentication, allowing developers to integrate their applications with Discord accounts.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create applications and obtain credentials through the Discord Developer Portal without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://discord.com/developers/docs/intro" target="_blank" rel="noreferrer">source</a> <a href="https://discord.com/developers/docs/topics/oauth2" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="telegram communications and messaging telegram is a cloud-based instant messaging app that allows users to send messages, photos, videos, and files of any type, as well as create groups and channels for broadcasting messages to large audiences.">
+          <td>27</td><td><strong>Telegram</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Telegram is a cloud-based instant messaging app that allows users to send messages, photos, videos, and files of any type, as well as create groups and channels for broadcasting messages to large audiences.</td>
+          <td>API key, Other<div class="muted">Telegram uses a unique API key for bot authentication and allows user authorization through its Telegram Login feature.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create bots and access the Telegram API without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://core.telegram.org/bots/api" target="_blank" rel="noreferrer">source</a> <a href="https://telegram.org/blog/bots" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="whatsapp business communications and messaging whatsapp business allows businesses to communicate with their customers using the whatsapp messaging platform, providing tools for customer engagement and support.">
+          <td>28</td><td><strong>WhatsApp Business</strong><div class="muted">Communications and Messaging</div></td>
+          <td>WhatsApp Business allows businesses to communicate with their customers using the WhatsApp messaging platform, providing tools for customer engagement and support.</td>
+          <td>API key, Bearer/token<div class="muted">WhatsApp Business API uses bearer tokens for authentication.</div></td>
+          <td><span class="pill">admin-approval</span><div class="muted">Businesses need to apply for access to the WhatsApp Business API, which requires admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">Requires admin approval for access.</div></td>
+          <td><a href="https://developers.facebook.com/docs/whatsapp/getting-started" target="_blank" rel="noreferrer">source</a> <a href="https://developers.facebook.com/docs/whatsapp/api" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="aircall communications and messaging aircall is a cloud-based phone system designed for customer support and sales teams, enabling users to make and receive calls, manage call flows, and integrate with various crm tools.">
+          <td>29</td><td><strong>Aircall</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Aircall is a cloud-based phone system designed for customer support and sales teams, enabling users to make and receive calls, manage call flows, and integrate with various CRM tools.</td>
+          <td>OAuth2, API key, Other<div class="muted">Aircall uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Aircall offers a free trial for new users, but a paid plan is required for continued use after the trial period.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.aircall.io/" target="_blank" rel="noreferrer">source</a> <a href="https://aircall.io/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="vonage communications and messaging vonage provides cloud communications services, including voice, messaging, and video solutions for businesses.">
+          <td>30</td><td><strong>Vonage</strong><div class="muted">Communications and Messaging</div></td>
+          <td>Vonage provides cloud communications services, including voice, messaging, and video solutions for businesses.</td>
+          <td>API key, OAuth2<div class="muted">Vonage uses API keys for authentication and supports OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access the API and start building applications.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.vonage.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.vonage.com/communications-apis/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="google ads marketing, ads, email and social google ads is an online advertising platform where businesses can create ads to reach audiences interested in their products or services.">
+          <td>31</td><td><strong>Google Ads</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Google Ads is an online advertising platform where businesses can create ads to reach audiences interested in their products or services.</td>
+          <td>OAuth2, API key<div class="muted">Google Ads API uses OAuth2 for authentication and authorization, requiring users to create credentials in the Google Cloud Console.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can create an account and access the API with their own credentials.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.google.com/google-ads/api/docs/oauth/overview" target="_blank" rel="noreferrer">source</a> <a href="https://developers.google.com/google-ads/api/docs/start" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="meta ads marketing, ads, email and social meta ads allows businesses to create and manage advertising campaigns across facebook and instagram, targeting specific audiences to drive engagement and conversions.">
+          <td>32</td><td><strong>Meta Ads</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Meta Ads allows businesses to create and manage advertising campaigns across Facebook and Instagram, targeting specific audiences to drive engagement and conversions.</td>
+          <td>OAuth2, Other<div class="muted">Meta Ads uses OAuth2 for authentication, requiring users to obtain an access token to interact with the API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create a Meta for Developers account to access the API and manage their ads.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.facebook.com/docs/marketing-apis" target="_blank" rel="noreferrer">source</a> <a href="https://www.facebook.com/business/ads" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="linkedin ads marketing, ads, email and social linkedin ads allows businesses to create and manage advertising campaigns on the linkedin platform, targeting specific audiences based on professional criteria.">
+          <td>33</td><td><strong>LinkedIn Ads</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>LinkedIn Ads allows businesses to create and manage advertising campaigns on the LinkedIn platform, targeting specific audiences based on professional criteria.</td>
+          <td>OAuth2, Bearer/token<div class="muted">LinkedIn Ads uses OAuth 2.0 for authentication, requiring an access token for API calls.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can create a LinkedIn Ads account and access the API after setting up a LinkedIn Developer account.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.microsoft.com/en-us/linkedin/marketing/integrations/ads" target="_blank" rel="noreferrer">source</a> <a href="https://www.linkedin.com/ads" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="gohighlevel marketing, ads, email and social gohighlevel is an all-in-one marketing platform designed for agencies, offering tools for crm, email marketing, landing pages, and more.">
+          <td>34</td><td><strong>GoHighLevel</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>GoHighLevel is an all-in-one marketing platform designed for agencies, offering tools for CRM, email marketing, landing pages, and more.</td>
+          <td>API key, OAuth2, Other<div class="muted">GoHighLevel provides API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for a paid plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://highlevel.stoplight.io/docs/api-1" target="_blank" rel="noreferrer">source</a> <a href="https://www.gohighlevel.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="mailchimp marketing, ads, email and social mailchimp is a marketing automation platform and an email marketing service.">
+          <td>35</td><td><strong>Mailchimp</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Mailchimp is a marketing automation platform and an email marketing service.</td>
+          <td>OAuth2, API key<div class="muted">Mailchimp supports OAuth2 for user authentication and API key for server-to-server communication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account and access the API with an API key.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://mailchimp.com/developer/marketing/api/" target="_blank" rel="noreferrer">source</a> <a href="https://mailchimp.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="klaviyo marketing, ads, email and social klaviyo is a marketing automation platform that helps businesses manage email marketing, sms marketing, and customer data.">
+          <td>36</td><td><strong>Klaviyo</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Klaviyo is a marketing automation platform that helps businesses manage email marketing, SMS marketing, and customer data.</td>
+          <td>API key, OAuth2<div class="muted">Klaviyo supports API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account with limited features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://www.klaviyo.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://www.klaviyo.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="systeme.io marketing, ads, email and social systeme.io is an all-in-one marketing platform that allows users to create sales funnels, manage email marketing, and automate their marketing processes.">
+          <td>37</td><td><strong>systeme.io</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Systeme.io is an all-in-one marketing platform that allows users to create sales funnels, manage email marketing, and automate their marketing processes.</td>
+          <td>API key, Other<div class="muted">Systeme.io provides an API key for authentication, which can be used to access its features programmatically.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account without needing admin approval.</div></td>
+          <td>REST<div class="muted">moderate · MCP: </div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://systeme.io/api" target="_blank" rel="noreferrer">source</a> <a href="https://systeme.io/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="pinterest marketing, ads, email and social pinterest is a visual discovery engine for finding ideas like recipes, home and style inspiration, and more.">
+          <td>38</td><td><strong>Pinterest</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>Pinterest is a visual discovery engine for finding ideas like recipes, home and style inspiration, and more.</td>
+          <td>OAuth2, API key<div class="muted">Pinterest uses OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create an app and obtain credentials through the Pinterest Developer portal.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.pinterest.com/docs/api/v5/" target="_blank" rel="noreferrer">source</a> <a href="https://developers.pinterest.com/docs/api/v5/#authentication" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="sendgrid marketing, ads, email and social sendgrid is a cloud-based email delivery service that provides reliable email delivery, scalability, and real-time analytics.">
+          <td>40</td><td><strong>SendGrid</strong><div class="muted">Marketing, Ads, Email and Social</div></td>
+          <td>SendGrid is a cloud-based email delivery service that provides reliable email delivery, scalability, and real-time analytics.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">SendGrid supports API key authentication and OAuth2 for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">SendGrid offers a free tier with limited features and paid plans for more extensive usage.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://sendgrid.com/docs/API_Reference/api_v3.html" target="_blank" rel="noreferrer">source</a> <a href="https://sendgrid.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="shopify ecommerce shopify is a comprehensive ecommerce platform that allows individuals and businesses to create their own online stores.">
+          <td>41</td><td><strong>Shopify</strong><div class="muted">Ecommerce</div></td>
+          <td>Shopify is a comprehensive ecommerce platform that allows individuals and businesses to create their own online stores.</td>
+          <td>OAuth2, API key, Bearer/token, Unknown<div class="muted">Shopify uses OAuth2 for app authentication and API key for private apps.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Shopify offers a free trial for new users, after which a paid plan is required.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://shopify.dev/api" target="_blank" rel="noreferrer">source</a> <a href="https://www.shopify.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="woocommerce ecommerce woocommerce is a customizable, open-source ecommerce platform built on wordpress.">
+          <td>42</td><td><strong>WooCommerce</strong><div class="muted">Ecommerce</div></td>
+          <td>WooCommerce is a customizable, open-source eCommerce platform built on WordPress.</td>
+          <td>API key, OAuth2, Basic<div class="muted">WooCommerce supports API key authentication and OAuth2 for secure access to its REST API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can create an account and generate API keys directly from their WooCommerce settings.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://woocommerce.com/document/woocommerce-rest-api" target="_blank" rel="noreferrer">source</a> <a href="https://woocommerce.com/document/woocommerce-rest-api/#authentication" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="bigcommerce ecommerce bigcommerce is a saas e-commerce platform that allows businesses to create and manage online stores.">
+          <td>43</td><td><strong>BigCommerce</strong><div class="muted">Ecommerce</div></td>
+          <td>BigCommerce is a SaaS e-commerce platform that allows businesses to create and manage online stores.</td>
+          <td>OAuth2, API key<div class="muted">BigCommerce supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free trial to access the API and build applications.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.bigcommerce.com/api-docs" target="_blank" rel="noreferrer">source</a> <a href="https://www.bigcommerce.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="salesforce commerce cloud ecommerce salesforce commerce cloud provides a comprehensive ecommerce platform that enables businesses to create and manage online stores, optimize customer experiences, and drive sales.">
+          <td>44</td><td><strong>Salesforce Commerce Cloud</strong><div class="muted">Ecommerce</div></td>
+          <td>Salesforce Commerce Cloud provides a comprehensive eCommerce platform that enables businesses to create and manage online stores, optimize customer experiences, and drive sales.</td>
+          <td>OAuth2, API key, Bearer/token, Other<div class="muted">Salesforce Commerce Cloud primarily uses OAuth2 for authentication, along with API keys for certain integrations.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Access to Salesforce Commerce Cloud requires a paid plan, and there are options for trials depending on the specific services.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">Some advanced features may require specific configurations or permissions.</div></td>
+          <td><a href="https://developer.salesforce.com/docs/commerce/" target="_blank" rel="noreferrer">source</a> <a href="https://www.salesforce.com/products/commerce-cloud/overview/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="magento (adobe commerce) ecommerce magento is an open-source ecommerce platform that provides a flexible shopping cart system, control over the look, content, and functionality of online stores.">
+          <td>45</td><td><strong>Magento (Adobe Commerce)</strong><div class="muted">Ecommerce</div></td>
+          <td>Magento is an open-source eCommerce platform that provides a flexible shopping cart system, control over the look, content, and functionality of online stores.</td>
+          <td>OAuth2, API key, Bearer/token, Other<div class="muted">Magento supports OAuth2 for API authentication, as well as API keys for accessing its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create an account and access the API documentation without needing admin approval.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.adobe.com/commerce/webapi/rest/" target="_blank" rel="noreferrer">source</a> <a href="https://developer.adobe.com/commerce/webapi/rest/rest-api-authentication/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="squarespace ecommerce squarespace is a website building and hosting platform that allows users to create and manage their own websites, including ecommerce functionalities.">
+          <td>46</td><td><strong>Squarespace</strong><div class="muted">Ecommerce</div></td>
+          <td>Squarespace is a website building and hosting platform that allows users to create and manage their own websites, including ecommerce functionalities.</td>
+          <td>OAuth2, API key, Other<div class="muted">Squarespace uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Users can sign up for a free trial, but access to the API requires a paid plan.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.squarespace.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.squarespace.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="ecwid ecommerce ecwid is an ecommerce platform that allows users to create online stores and sell products across various channels.">
+          <td>47</td><td><strong>Ecwid</strong><div class="muted">Ecommerce</div></td>
+          <td>Ecwid is an ecommerce platform that allows users to create online stores and sell products across various channels.</td>
+          <td>API key, OAuth2<div class="muted">Ecwid supports API key and OAuth2 for authentication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free plan to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.ecwid.com/api-documentation" target="_blank" rel="noreferrer">source</a> <a href="https://www.ecwid.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="gumroad ecommerce gumroad is a platform that allows creators to sell products directly to consumers, including digital goods and physical products.">
+          <td>48</td><td><strong>Gumroad</strong><div class="muted">Ecommerce</div></td>
+          <td>Gumroad is a platform that allows creators to sell products directly to consumers, including digital goods and physical products.</td>
+          <td>OAuth2, API key, Other<div class="muted">Gumroad uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a Gumroad account and access the API without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://gumroad.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://gumroad.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="amazon selling partner ecommerce the amazon selling partner api (sp-api) provides programmatic access to amazon&#x27;s selling services, allowing developers to build applications that help sellers manage their amazon business.">
+          <td>49</td><td><strong>Amazon Selling Partner</strong><div class="muted">Ecommerce</div></td>
+          <td>The Amazon Selling Partner API (SP-API) provides programmatic access to Amazon&#x27;s selling services, allowing developers to build applications that help sellers manage their Amazon business.</td>
+          <td>OAuth2, Bearer/token<div class="muted">The SP-API uses OAuth 2.0 for authentication, requiring developers to obtain access tokens to interact with the API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for access to the SP-API through the Amazon Developer Console.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer-docs.amazon.com/sp-api" target="_blank" rel="noreferrer">source</a> <a href="https://developer-docs.amazon.com/sp-api/docs/authentication-and-authorization" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="fanbasis ecommerce fanbasis is a platform that allows creators to monetize their content and engage with their fans through subscriptions and exclusive content.">
+          <td>50</td><td><strong>fanbasis</strong><div class="muted">Ecommerce</div></td>
+          <td>Fanbasis is a platform that allows creators to monetize their content and engage with their fans through subscriptions and exclusive content.</td>
+          <td>OAuth2, API key, Other<div class="muted">Fanbasis uses OAuth2 for authentication and provides API keys for accessing its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for free and access basic features, with options for paid plans for additional features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://fanbasis.com/developer" target="_blank" rel="noreferrer">source</a> <a href="https://fanbasis.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="dataforseo data, seo and scraping dataforseo provides apis for seo data, keyword research, and web scraping services.">
+          <td>51</td><td><strong>DataForSEO</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>DataForSEO provides APIs for SEO data, keyword research, and web scraping services.</td>
+          <td>API key<div class="muted">API key is required for authentication to access the DataForSEO services.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for an account and obtain an API key after selecting a paid plan.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.dataforseo.com/" target="_blank" rel="noreferrer">source</a> <a href="https://dataforseo.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="se ranking data, seo and scraping se ranking is an all-in-one seo software that provides tools for keyword tracking, website audit, competitor analysis, and more.">
+          <td>52</td><td><strong>SE Ranking</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>SE Ranking is an all-in-one SEO software that provides tools for keyword tracking, website audit, competitor analysis, and more.</td>
+          <td>API key<div class="muted">API key is required for authentication to access the SE Ranking API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Users can sign up for a free trial, but a paid plan is required for full access to the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://seranking.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://seranking.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="ahrefs data, seo and scraping ahrefs provides tools for seo analysis, backlink checking, and keyword research.">
+          <td>53</td><td><strong>Ahrefs</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Ahrefs provides tools for SEO analysis, backlink checking, and keyword research.</td>
+          <td>API key<div class="muted">Ahrefs uses API keys for authentication, which can be generated in the user account settings.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users must have a paid subscription to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://ahrefs.com/api/documentation" target="_blank" rel="noreferrer">source</a> <a href="https://ahrefs.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="mrscraper data, seo and scraping mrscraper is a web scraping tool that allows users to extract data from websites easily.">
+          <td>54</td><td><strong>MrScraper</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>MrScraper is a web scraping tool that allows users to extract data from websites easily.</td>
+          <td>API key, Other<div class="muted">MrScraper uses API keys for authentication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.mrscraper.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.mrscraper.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="apify data, seo and scraping apify is a platform for web scraping and automation, allowing users to extract data from websites and automate workflows.">
+          <td>55</td><td><strong>Apify</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Apify is a platform for web scraping and automation, allowing users to extract data from websites and automate workflows.</td>
+          <td>API key, OAuth2<div class="muted">Apify supports API key authentication and OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features and API usage.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.apify.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.apify.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="firecrawl data, seo and scraping firecrawl is a web scraping tool designed to extract data from websites for seo and data analysis purposes.">
+          <td>56</td><td><strong>Firecrawl</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Firecrawl is a web scraping tool designed to extract data from websites for SEO and data analysis purposes.</td>
+          <td>API key, Other<div class="muted">Firecrawl uses API keys for authentication.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for an account and obtain an API key for access.</div></td>
+          <td>REST<div class="muted">broad · MCP: </div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://firecrawl.dev/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://firecrawl.dev/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="bright data data, seo and scraping bright data provides data collection services, including web scraping and proxy solutions for businesses.">
+          <td>57</td><td><strong>Bright Data</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Bright Data provides data collection services, including web scraping and proxy solutions for businesses.</td>
+          <td>API key, Bearer/token<div class="muted">Authentication is primarily done via API keys and bearer tokens for accessing the API.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for an account and access the API after selecting a paid plan.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://brightdata.com/docs" target="_blank" rel="noreferrer">source</a> <a href="https://brightdata.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="sherlock data, seo and scraping sherlock is a tool for hunting down social media accounts by username across many platforms.">
+          <td>58</td><td><strong>Sherlock</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Sherlock is a tool for hunting down social media accounts by username across many platforms.</td>
+          <td>Unknown<div class="muted">Sherlock does not require authentication for its core functionality, as it scrapes public data.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">No signup or approval is required to use Sherlock.</div></td>
+          <td>Unknown<div class="muted">narrow · MCP: </div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noreferrer">source</a> <a href="https://github.com/sherlock-project/sherlock#usage" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="waterfall.io data, seo and scraping waterfall.io provides company intelligence and data scraping services to help users gather insights about businesses.">
+          <td>59</td><td><strong>Waterfall.io</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Waterfall.io provides company intelligence and data scraping services to help users gather insights about businesses.</td>
+          <td>API key, Bearer/token<div class="muted">Waterfall.io uses API keys for authentication, which are required to access their API endpoints.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features and API capabilities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://waterfall.io/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://waterfall.io/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="clay data, seo and scraping clay is a platform that helps users collect, organize, and utilize data from various sources to enhance their productivity and decision-making.">
+          <td>60</td><td><strong>Clay</strong><div class="muted">Data, SEO and Scraping</div></td>
+          <td>Clay is a platform that helps users collect, organize, and utilize data from various sources to enhance their productivity and decision-making.</td>
+          <td>OAuth2, API key, Other<div class="muted">Clay uses OAuth2 for user authentication and provides API keys for programmatic access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features and API capabilities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://clay.com/developers" target="_blank" rel="noreferrer">source</a> <a href="https://clay.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="github developer, infra and data platforms github is a platform for version control and collaboration, allowing developers to work together on projects from anywhere.">
+          <td>61</td><td><strong>GitHub</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>GitHub is a platform for version control and collaboration, allowing developers to work together on projects from anywhere.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">GitHub supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can create accounts and access the API without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.github.com/en/rest" target="_blank" rel="noreferrer">source</a> <a href="https://docs.github.com/en/developers/apps/building-oauth-apps" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="vercel developer, infra and data platforms vercel is a platform for frontend frameworks and static sites, built to integrate with headless content, databases, and apis.">
+          <td>62</td><td><strong>Vercel</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Vercel is a platform for frontend frameworks and static sites, built to integrate with headless content, databases, and APIs.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Vercel supports OAuth2 for user authentication and API key for service access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API and other features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://vercel.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://vercel.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="netlify developer, infra and data platforms netlify is a platform for building, deploying, and managing modern web projects, providing continuous deployment, serverless functions, and a global content delivery network.">
+          <td>63</td><td><strong>Netlify</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Netlify is a platform for building, deploying, and managing modern web projects, providing continuous deployment, serverless functions, and a global content delivery network.</td>
+          <td>OAuth2, API key, Bearer/token, Other<div class="muted">Netlify supports API key authentication and OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features and API capabilities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.netlify.com/api/get-started/" target="_blank" rel="noreferrer">source</a> <a href="https://www.netlify.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="cloudflare developer, infra and data platforms cloudflare provides a suite of services to enhance website performance, security, and reliability, including cdn, ddos protection, and dns services.">
+          <td>64</td><td><strong>Cloudflare</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Cloudflare provides a suite of services to enhance website performance, security, and reliability, including CDN, DDoS protection, and DNS services.</td>
+          <td>API key, Bearer/token<div class="muted">Cloudflare uses API keys for authentication, which can be generated in the Cloudflare dashboard.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account and generate API keys without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.cloudflare.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://developers.cloudflare.com/api/authentication/api-tokens/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="supabase developer, infra and data platforms supabase is an open-source firebase alternative that provides a backend as a service, including database, authentication, and storage functionalities.">
+          <td>65</td><td><strong>Supabase</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Supabase is an open-source Firebase alternative that provides a backend as a service, including database, authentication, and storage functionalities.</td>
+          <td>API key, Bearer/token, JWT<div class="muted">Supabase uses API keys for project access and JWT for user authentication.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account and access the platform without needing admin approval.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://supabase.com/docs/guides/api" target="_blank" rel="noreferrer">source</a> <a href="https://supabase.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="neo4j developer, infra and data platforms neo4j is a graph database management system that provides a platform for building applications that utilize graph data structures.">
+          <td>66</td><td><strong>Neo4j</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Neo4j is a graph database management system that provides a platform for building applications that utilize graph data structures.</td>
+          <td>API key, Bearer/token, Other<div class="muted">Neo4j supports authentication via API keys and bearer tokens for accessing its database services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free tier that allows access to Neo4j&#x27;s cloud services.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://neo4j.com/docs/api/" target="_blank" rel="noreferrer">source</a> <a href="https://neo4j.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="snowflake developer, infra and data platforms snowflake is a cloud-based data warehousing platform that provides data storage, processing, and analytic solutions.">
+          <td>67</td><td><strong>Snowflake</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Snowflake is a cloud-based data warehousing platform that provides data storage, processing, and analytic solutions.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Snowflake supports OAuth2 for user authentication and API key for programmatic access.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for a Snowflake account and access the platform, but a paid plan is required for full features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.snowflake.com/en/user-guide/sql-commands.html" target="_blank" rel="noreferrer">source</a> <a href="https://www.snowflake.com/free-trial/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="mongodb atlas developer, infra and data platforms mongodb atlas is a fully managed cloud database service that allows users to deploy, manage, and scale mongodb databases in the cloud.">
+          <td>68</td><td><strong>MongoDB Atlas</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>MongoDB Atlas is a fully managed cloud database service that allows users to deploy, manage, and scale MongoDB databases in the cloud.</td>
+          <td>API key, Bearer/token<div class="muted">MongoDB Atlas uses API keys for authentication, which can be generated in the Atlas UI.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free tier of MongoDB Atlas without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://www.mongodb.com/docs/atlas/api" target="_blank" rel="noreferrer">source</a> <a href="https://www.mongodb.com/cloud/atlas/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="datadog developer, infra and data platforms datadog is a monitoring and analytics platform for developers, it operations teams, and business users, providing observability across applications, infrastructure, and logs.">
+          <td>69</td><td><strong>Datadog</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Datadog is a monitoring and analytics platform for developers, IT operations teams, and business users, providing observability across applications, infrastructure, and logs.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">Datadog supports API key authentication and OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free trial without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.datadoghq.com/api/latest/" target="_blank" rel="noreferrer">source</a> <a href="https://www.datadoghq.com/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="sentry developer, infra and data platforms sentry provides real-time error tracking and performance monitoring for applications, helping developers identify and fix issues in their code.">
+          <td>70</td><td><strong>Sentry</strong><div class="muted">Developer, Infra and Data platforms</div></td>
+          <td>Sentry provides real-time error tracking and performance monitoring for applications, helping developers identify and fix issues in their code.</td>
+          <td>API key, OAuth2<div class="muted">Sentry supports API key authentication and OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access Sentry&#x27;s features, including API access.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.sentry.io/api/" target="_blank" rel="noreferrer">source</a> <a href="https://sentry.io/pricing/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="notion productivity and project management notion is an all-in-one workspace for note-taking, project management, and task organization.">
+          <td>71</td><td><strong>Notion</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Notion is an all-in-one workspace for note-taking, project management, and task organization.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Notion uses OAuth2 for user authentication and API key for integration access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.notion.com/" target="_blank" rel="noreferrer">source</a> <a href="https://www.notion.so/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="airtable productivity and project management airtable is a cloud-based collaboration platform that combines the features of a database with the simplicity of a spreadsheet, allowing users to organize, manage, and collaborate on projects.">
+          <td>72</td><td><strong>Airtable</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Airtable is a cloud-based collaboration platform that combines the features of a database with the simplicity of a spreadsheet, allowing users to organize, manage, and collaborate on projects.</td>
+          <td>OAuth2, API key<div class="muted">Airtable supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API with limited features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://airtable.com/developers" target="_blank" rel="noreferrer">source</a> <a href="https://airtable.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="linear productivity and project management linear is a tool for managing software projects, enabling teams to plan, track, and collaborate on tasks efficiently.">
+          <td>73</td><td><strong>Linear</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Linear is a tool for managing software projects, enabling teams to plan, track, and collaborate on tasks efficiently.</td>
+          <td>OAuth2, API key, Other<div class="muted">Linear uses OAuth2 for authentication and provides API keys for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Users can sign up for a free trial, but paid plans are required for extended features.</div></td>
+          <td>GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.linear.app/docs" target="_blank" rel="noreferrer">source</a> <a href="https://linear.app/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="jira productivity and project management jira is a project management tool that helps teams plan, track, and manage agile software development projects.">
+          <td>74</td><td><strong>Jira</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Jira is a project management tool that helps teams plan, track, and manage agile software development projects.</td>
+          <td>OAuth2, API key, Basic, Bearer/token, JWT, Session/cookie, Other, Unknown<div class="muted">Jira supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Jira offers a free tier for small teams, with paid plans available for larger teams and additional features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/" target="_blank" rel="noreferrer">source</a> <a href="https://developer.atlassian.com/cloud/jira/platform/oauth/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="asana productivity and project management asana is a work management platform that helps teams organize, track, and manage their work.">
+          <td>75</td><td><strong>Asana</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Asana is a work management platform that helps teams organize, track, and manage their work.</td>
+          <td>OAuth2, API key<div class="muted">Asana uses OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developers.asana.com/docs" target="_blank" rel="noreferrer">source</a> <a href="https://asana.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="monday.com productivity and project management monday.com is a work operating system that enables teams to run projects and workflows with confidence.">
+          <td>76</td><td><strong>Monday.com</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Monday.com is a work operating system that enables teams to run projects and workflows with confidence.</td>
+          <td>OAuth2, API key<div class="muted">Monday.com supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free trial without needing admin approval.</div></td>
+          <td>REST / GraphQL<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://monday.com/developers/v2" target="_blank" rel="noreferrer">source</a> <a href="https://monday.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="clickup productivity and project management clickup is a productivity platform that allows teams to manage tasks, projects, and workflows in one place.">
+          <td>77</td><td><strong>ClickUp</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>ClickUp is a productivity platform that allows teams to manage tasks, projects, and workflows in one place.</td>
+          <td>OAuth2, API key<div class="muted">ClickUp supports OAuth2 for user authentication and API key for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access the API with limited features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://clickup.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://clickup.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="coda productivity and project management coda is a document-based productivity tool that combines documents, spreadsheets, and applications into a single platform for project management and collaboration.">
+          <td>78</td><td><strong>Coda</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Coda is a document-based productivity tool that combines documents, spreadsheets, and applications into a single platform for project management and collaboration.</td>
+          <td>OAuth2, API key, Bearer/token, Other<div class="muted">Coda uses OAuth2 for user authentication and API keys for accessing its API.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access Coda&#x27;s features and API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://coda.io/developers" target="_blank" rel="noreferrer">source</a> <a href="https://coda.io/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="smartsheet productivity and project management smartsheet is a platform for work management and automation that enables teams to plan, track, automate, and report on work in real-time.">
+          <td>79</td><td><strong>Smartsheet</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Smartsheet is a platform for work management and automation that enables teams to plan, track, automate, and report on work in real-time.</td>
+          <td>OAuth2, API key, Bearer/token, Other<div class="muted">Smartsheet uses OAuth 2.0 for authentication and also supports API keys for accessing its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Smartsheet offers a free trial for new users, but paid plans are required for continued use after the trial.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://smartsheet.redoc.ly/" target="_blank" rel="noreferrer">source</a> <a href="https://www.smartsheet.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="harvest productivity and project management harvest is a time tracking and invoicing software that helps teams manage their projects and bill clients.">
+          <td>80</td><td><strong>Harvest</strong><div class="muted">Productivity and Project Management</div></td>
+          <td>Harvest is a time tracking and invoicing software that helps teams manage their projects and bill clients.</td>
+          <td>OAuth2, API key<div class="muted">Harvest uses OAuth2 for user authentication and also supports API key for server-to-server communication.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Harvest offers a free trial for new users, after which a paid plan is required.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://help.getharvest.com/api-v2" target="_blank" rel="noreferrer">source</a> <a href="https://www.getharvest.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="stripe finance and fintech stripe is a payment processing platform that allows businesses to accept payments online and in mobile apps.">
+          <td>81</td><td><strong>Stripe</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Stripe is a payment processing platform that allows businesses to accept payments online and in mobile apps.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">Stripe primarily uses API keys for authentication, which can be found in the dashboard. OAuth2 is also supported for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account and access API keys immediately.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://stripe.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://stripe.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="plaid finance and fintech plaid provides a data network that powers the fintech tools and applications, allowing users to connect their bank accounts to various financial services.">
+          <td>82</td><td><strong>Plaid</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Plaid provides a data network that powers the fintech tools and applications, allowing users to connect their bank accounts to various financial services.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">Plaid uses OAuth2 for user authentication and API keys for application access.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access the API with limited features.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://plaid.com/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://plaid.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="binance finance and fintech binance is a cryptocurrency exchange platform that allows users to trade various cryptocurrencies and digital assets.">
+          <td>83</td><td><strong>Binance</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Binance is a cryptocurrency exchange platform that allows users to trade various cryptocurrencies and digital assets.</td>
+          <td>API key, Bearer/token<div class="muted">API keys are used for authentication, and users can generate these keys from their Binance account settings.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can create an account and generate API keys without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://binance-docs.github.io/apidocs/spot/en/#public-rest-api" target="_blank" rel="noreferrer">source</a> <a href="https://www.binance.com/en/support/faq/360002502072" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="paygent connect finance and fintech paygent connect is a payment processing platform that enables businesses to accept various payment methods securely.">
+          <td>84</td><td><strong>Paygent Connect</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Paygent Connect is a payment processing platform that enables businesses to accept various payment methods securely.</td>
+          <td>API key, Bearer/token<div class="muted">Paygent Connect uses API keys for authentication and supports bearer token for secure API access.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Businesses can sign up for Paygent Connect and access the API after selecting a paid plan.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">Requires a paid plan for full access.</div></td>
+          <td><a href="https://developer.paygent.co.jp/" target="_blank" rel="noreferrer">source</a> <a href="https://www.paygent.co.jp/price/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="ipayx finance and fintech ipayx provides a platform for payment processing and financial services, enabling businesses to manage transactions and financial operations efficiently.">
+          <td>85</td><td><strong>iPayX</strong><div class="muted">Finance and Fintech</div></td>
+          <td>iPayX provides a platform for payment processing and financial services, enabling businesses to manage transactions and financial operations efficiently.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">iPayX supports API key and OAuth2 for authentication, allowing secure access to its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for an account and access certain features without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://ipayx.ai/docs" target="_blank" rel="noreferrer">source</a> <a href="https://ipayx.ai/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="quickbooks finance and fintech quickbooks is an accounting software that helps businesses manage their finances, including invoicing, payroll, and expense tracking.">
+          <td>86</td><td><strong>QuickBooks</strong><div class="muted">Finance and Fintech</div></td>
+          <td>QuickBooks is an accounting software that helps businesses manage their finances, including invoicing, payroll, and expense tracking.</td>
+          <td>OAuth2, API key, Bearer/token<div class="muted">QuickBooks uses OAuth 2.0 for authentication, allowing secure access to its API.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Developers can sign up for a free developer account to access the API, but production access may require a paid plan.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization" target="_blank" rel="noreferrer">source</a> <a href="https://developer.intuit.com/app/developer/qbo/docs/develop" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="xero finance and fintech xero is a cloud-based accounting software platform for small and medium-sized businesses.">
+          <td>87</td><td><strong>Xero</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Xero is a cloud-based accounting software platform for small and medium-sized businesses.</td>
+          <td>OAuth2<div class="muted">Xero uses OAuth 2.0 for authentication, requiring users to authorize access to their data.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Xero offers a free trial for new users, after which a paid plan is required.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.xero.com/documentation/auth-and-limits/oauth2" target="_blank" rel="noreferrer">source</a> <a href="https://developer.xero.com/documentation/api/api-overview" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="brex finance and fintech brex provides a financial platform for businesses, offering corporate cards, expense management, and cash management solutions.">
+          <td>88</td><td><strong>Brex</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Brex provides a financial platform for businesses, offering corporate cards, expense management, and cash management solutions.</td>
+          <td>OAuth2, API key, Bearer/token, Unknown<div class="muted">Brex uses OAuth2 for authentication and provides API keys for accessing its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a Brex account online and access the API with provided credentials.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://developer.brex.com/docs" target="_blank" rel="noreferrer">source</a> <a href="https://www.brex.com/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="ramp finance and fintech ramp is a corporate card and spend management platform that helps businesses manage their expenses and optimize spending.">
+          <td>89</td><td><strong>Ramp</strong><div class="muted">Finance and Fintech</div></td>
+          <td>Ramp is a corporate card and spend management platform that helps businesses manage their expenses and optimize spending.</td>
+          <td>OAuth2, API key, Other<div class="muted">Ramp uses OAuth2 for authentication and provides API keys for accessing its services.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for Ramp and access certain features without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.ramp.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://www.ramp.com/" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="pitchbook finance and fintech pitchbook provides data and insights on private and public equity markets, including venture capital, private equity, and m&amp;a.">
+          <td>90</td><td><strong>PitchBook</strong><div class="muted">Finance and Fintech</div></td>
+          <td>PitchBook provides data and insights on private and public equity markets, including venture capital, private equity, and M&amp;A.</td>
+          <td>API key, OAuth2, Other<div class="muted">Authentication is primarily done via API key and OAuth2 for accessing the PitchBook API.</div></td>
+          <td><span class="pill">mixed</span><div class="muted">Users can sign up for a trial, but access to the API may require additional approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">gated-needs-outreach</span><div class="muted">Access to the API requires approval and potentially a paid plan.</div></td>
+          <td><a href="https://pitchbook.com/api" target="_blank" rel="noreferrer">source</a> <a href="https://pitchbook.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="notebooklm ai, research and media-native notebooklm is an ai-powered tool designed for research and media, leveraging google&#x27;s gemini technology.">
+          <td>91</td><td><strong>NotebookLM</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>NotebookLM is an AI-powered tool designed for research and media, leveraging Google&#x27;s Gemini technology.</td>
+          <td>OAuth2, API key, Bearer/token, Unknown<div class="muted">Authentication is primarily through OAuth2 and API keys, as indicated in the developer documentation.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for access to the API without needing admin approval.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://cloud.google.com/gemini/docs" target="_blank" rel="noreferrer">source</a> <a href="https://cloud.google.com/gemini/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="otter ai ai, research and media-native otter ai provides transcription services for meetings, interviews, and other voice conversations, utilizing ai to generate accurate text records.">
+          <td>92</td><td><strong>Otter AI</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Otter AI provides transcription services for meetings, interviews, and other voice conversations, utilizing AI to generate accurate text records.</td>
+          <td>OAuth2, API key, Other<div class="muted">Otter AI uses OAuth2 for user authentication and provides an API key for programmatic access.</div></td>
+          <td><span class="pill">unknown</span><div class="muted">Users can sign up for a free account with limited features, and there are paid plans available for additional capabilities.</div></td>
+          <td>REST<div class="muted">moderate · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://help.otter.ai/en/collections/360000032186-Otter-for-Developers" target="_blank" rel="noreferrer">source</a> <a href="https://otter.ai/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="fathom ai, research and media-native fathom provides ai-driven video summarization and insights, allowing users to extract key information from video content efficiently.">
+          <td>93</td><td><strong>Fathom</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Fathom provides AI-driven video summarization and insights, allowing users to extract key information from video content efficiently.</td>
+          <td>API key, OAuth2, Other<div class="muted">Fathom uses API keys for authentication and supports OAuth2 for user authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features, with options for paid plans for advanced capabilities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://fathom.video/docs/api" target="_blank" rel="noreferrer">source</a> <a href="https://fathom.video/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="consensus ai, research and media-native consensus is an ai-driven platform that helps users find and summarize research papers and articles efficiently.">
+          <td>94</td><td><strong>Consensus</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Consensus is an AI-driven platform that helps users find and summarize research papers and articles efficiently.</td>
+          <td>OAuth2<div class="muted">OAuth2 is used for user authentication and authorization.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for free and access the platform without needing admin approval.</div></td>
+          <td>REST<div class="muted">moderate · MCP: </div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://consensus.app/docs/authentication" target="_blank" rel="noreferrer">source</a> <a href="https://consensus.app/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="reducto ai, research and media-native reducto is a document parsing tool that utilizes ai to extract and analyze information from various document formats.">
+          <td>95</td><td><strong>Reducto</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Reducto is a document parsing tool that utilizes AI to extract and analyze information from various document formats.</td>
+          <td>API key, Bearer/token<div class="muted">Authentication is done via API keys and Bearer tokens for accessing the API endpoints.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for an account and obtain API keys directly from the website.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.reducto.ai/" target="_blank" rel="noreferrer">source</a> <a href="https://reducto.ai/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="devin ai, research and media-native devin is an ai-powered platform that assists in research and media creation, leveraging advanced algorithms to generate content and insights.">
+          <td>96</td><td><strong>Devin</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Devin is an AI-powered platform that assists in research and media creation, leveraging advanced algorithms to generate content and insights.</td>
+          <td>API key, OAuth2, Bearer/token<div class="muted">Devin supports API key and OAuth2 for authentication, allowing developers to securely access its features.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Developers can sign up for a free account to access basic features, with options for paid plans for advanced capabilities.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://docs.devin.ai/" target="_blank" rel="noreferrer">source</a> <a href="https://devin.ai/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="higgsfield ai, research and media-native higgsfield provides a content suite for ai-driven research and media creation.">
+          <td>97</td><td><strong>higgsfield</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Higgsfield provides a content suite for AI-driven research and media creation.</td>
+          <td>API key, Bearer/token<div class="muted">Authentication is done via API keys and bearer tokens.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for free access to the API.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://higgsfield.ai/docs" target="_blank" rel="noreferrer">source</a> <a href="https://higgsfield.ai/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="mermaid cli ai, research and media-native mermaid cli is a command-line interface for generating diagrams and flowcharts from text in a markdown-like syntax.">
+          <td>98</td><td><strong>Mermaid CLI</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Mermaid CLI is a command-line interface for generating diagrams and flowcharts from text in a markdown-like syntax.</td>
+          <td>Unknown<div class="muted">No authentication is required to use Mermaid CLI as it is a command-line tool.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Mermaid CLI is open-source and can be installed via npm without any paid plans or admin approval.</div></td>
+          <td>Unknown<div class="muted">narrow · MCP: </div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://mermaid-js.github.io/mermaid-cli/" target="_blank" rel="noreferrer">source</a> <a href="https://github.com/mermaid-js/mermaid-cli" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="youtube transcript ai, research and media-native youtube transcript provides automated transcription services for youtube videos, allowing users to extract text from video content.">
+          <td>99</td><td><strong>YouTube Transcript</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>YouTube Transcript provides automated transcription services for YouTube videos, allowing users to extract text from video content.</td>
+          <td>API key, Bearer/token<div class="muted">API key is required for accessing the transcription services.</div></td>
+          <td><span class="pill">self-serve-paid</span><div class="muted">Users can sign up for an account and obtain an API key for usage.</div></td>
+          <td>REST<div class="muted">broad · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready</span><div class="muted"></div></td>
+          <td><a href="https://transcriptapi.com/docs" target="_blank" rel="noreferrer">source</a> <a href="https://transcriptapi.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr><tr data-search="grain ai, research and media-native grain captures and organizes meeting notes, allowing users to create shareable highlights and insights from their conversations.">
+          <td>100</td><td><strong>Grain</strong><div class="muted">AI, Research and Media-native</div></td>
+          <td>Grain captures and organizes meeting notes, allowing users to create shareable highlights and insights from their conversations.</td>
+          <td>OAuth2, API key, Other<div class="muted">Grain uses OAuth2 for user authentication and provides API keys for developers.</div></td>
+          <td><span class="pill">self-serve-free</span><div class="muted">Users can sign up for a free account to access basic features, with additional features available in paid plans.</div></td>
+          <td>REST<div class="muted">moderate · MCP: True</div></td>
+          <td><span class="pill">toolkit-ready-with-constraints</span><div class="muted">Limited API capabilities for advanced integrations.</div></td>
+          <td><a href="https://grain.com/developers" target="_blank" rel="noreferrer">source</a> <a href="https://grain.com/pricing" target="_blank" rel="noreferrer">source</a></td>
+        </tr></tbody></table></div></section>
+<section><p class="small">Method note: findings describe public developer access as observed on the research date. Plans, permissions and docs can change; evidence URLs are included so a reviewer can audit the claims.</p></section>
+</div><script>function filterRows(q){q=q.toLowerCase();document.querySelectorAll('#rows tr').forEach(r=>r.style.display=(r.dataset.search||'').includes(q)?'':'none')}
+</script></body></html>

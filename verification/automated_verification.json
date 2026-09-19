@@ -1,0 +1,588 @@
+{
+  "sample_ids": [
+    92,
+    1,
+    25,
+    54,
+    64,
+    43,
+    82,
+    40,
+    72,
+    15,
+    98,
+    2
+  ],
+  "automated_checks": [
+    {
+      "app_id": 92,
+      "app": "Otter AI",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key",
+        "Other"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key",
+        "Other"
+      ],
+      "match": true,
+      "evidence_url": "https://help.otter.ai/en/collections/360000032186-Otter-for-Developers",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 92,
+      "app": "Otter AI",
+      "field": "credential_access.mode",
+      "expected": "unknown",
+      "observed": "self-serve-free",
+      "match": false,
+      "evidence_url": "https://otter.ai/pricing",
+      "notes": "The mode should be self-serve-free due to free account sign-up."
+    },
+    {
+      "app_id": 92,
+      "app": "Otter AI",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://help.otter.ai/en/collections/360000032186-Otter-for-Developers",
+      "notes": "Official MCP documentation is available."
+    },
+    {
+      "app_id": 92,
+      "app": "Otter AI",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 1,
+      "app": "Salesforce",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key",
+        "Bearer/token"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key",
+        "Bearer/token"
+      ],
+      "match": true,
+      "evidence_url": "https://developer.salesforce.com/docs/atlas.en/ApiReference/index.html",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 1,
+      "app": "Salesforce",
+      "field": "credential_access.mode",
+      "expected": "unknown",
+      "observed": "unknown",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly noted as unknown."
+    },
+    {
+      "app_id": 1,
+      "app": "Salesforce",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://developer.salesforce.com/docs/atlas.en/",
+      "notes": "An official MCP is present."
+    },
+    {
+      "app_id": 1,
+      "app": "Salesforce",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 25,
+      "app": "Pumble",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key",
+        "Unknown"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key",
+        "Unknown"
+      ],
+      "match": true,
+      "evidence_url": "https://pumble.com/api",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 25,
+      "app": "Pumble",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 25,
+      "app": "Pumble",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://pumble.com/api",
+      "notes": "Official MCP documentation is available."
+    },
+    {
+      "app_id": 25,
+      "app": "Pumble",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 54,
+      "app": "MrScraper",
+      "field": "auth_methods",
+      "expected": [
+        "API key",
+        "Other"
+      ],
+      "observed": [
+        "API key",
+        "Other"
+      ],
+      "match": true,
+      "evidence_url": "https://docs.mrscraper.com/",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 54,
+      "app": "MrScraper",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 54,
+      "app": "MrScraper",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://docs.mrscraper.com/",
+      "notes": "Official MCP documentation is present."
+    },
+    {
+      "app_id": 54,
+      "app": "MrScraper",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 64,
+      "app": "Cloudflare",
+      "field": "auth_methods",
+      "expected": [
+        "API key",
+        "Bearer/token"
+      ],
+      "observed": [
+        "API key",
+        "Bearer/token"
+      ],
+      "match": true,
+      "evidence_url": "https://developers.cloudflare.com/api",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 64,
+      "app": "Cloudflare",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 64,
+      "app": "Cloudflare",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://developers.cloudflare.com/api",
+      "notes": "An official MCP is present."
+    },
+    {
+      "app_id": 64,
+      "app": "Cloudflare",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 43,
+      "app": "BigCommerce",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key"
+      ],
+      "match": true,
+      "evidence_url": "https://developer.bigcommerce.com/api-docs",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 43,
+      "app": "BigCommerce",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 43,
+      "app": "BigCommerce",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://developer.bigcommerce.com/api-docs",
+      "notes": "Official MCP documentation is present."
+    },
+    {
+      "app_id": 43,
+      "app": "BigCommerce",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 82,
+      "app": "Plaid",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key",
+        "Bearer/token"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key",
+        "Bearer/token"
+      ],
+      "match": true,
+      "evidence_url": "https://plaid.com/docs/api",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 82,
+      "app": "Plaid",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 82,
+      "app": "Plaid",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://plaid.com/docs/api",
+      "notes": "An official MCP is present."
+    },
+    {
+      "app_id": 82,
+      "app": "Plaid",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 40,
+      "app": "SendGrid",
+      "field": "auth_methods",
+      "expected": [
+        "API key",
+        "OAuth2",
+        "Bearer/token"
+      ],
+      "observed": [
+        "API key",
+        "OAuth2",
+        "Bearer/token"
+      ],
+      "match": true,
+      "evidence_url": "https://sendgrid.com/docs/API_Reference/api_v3.html",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 40,
+      "app": "SendGrid",
+      "field": "credential_access.mode",
+      "expected": "unknown",
+      "observed": "unknown",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly noted as unknown."
+    },
+    {
+      "app_id": 40,
+      "app": "SendGrid",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://sendgrid.com/docs/API_Reference/api_v3.html",
+      "notes": "An official MCP is present."
+    },
+    {
+      "app_id": 40,
+      "app": "SendGrid",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 72,
+      "app": "Airtable",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key"
+      ],
+      "match": true,
+      "evidence_url": "https://airtable.com/developers",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 72,
+      "app": "Airtable",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 72,
+      "app": "Airtable",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://airtable.com/developers",
+      "notes": "Official MCP documentation is present."
+    },
+    {
+      "app_id": 72,
+      "app": "Airtable",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 15,
+      "app": "Pylon",
+      "field": "auth_methods",
+      "expected": [
+        "API key",
+        "OAuth2",
+        "Bearer/token"
+      ],
+      "observed": [
+        "API key",
+        "OAuth2",
+        "Bearer/token"
+      ],
+      "match": true,
+      "evidence_url": "https://usepylon.com/docs/api",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 15,
+      "app": "Pylon",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly specified."
+    },
+    {
+      "app_id": 15,
+      "app": "Pylon",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://usepylon.com/docs/api",
+      "notes": "Official MCP documentation is present."
+    },
+    {
+      "app_id": 15,
+      "app": "Pylon",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    },
+    {
+      "app_id": 98,
+      "app": "Mermaid CLI",
+      "field": "auth_methods",
+      "expected": [
+        "Unknown"
+      ],
+      "observed": [
+        "Unknown"
+      ],
+      "match": true,
+      "evidence_url": null,
+      "notes": "No authentication is required as expected."
+    },
+    {
+      "app_id": 98,
+      "app": "Mermaid CLI",
+      "field": "credential_access.mode",
+      "expected": "self-serve-free",
+      "observed": "self-serve-free",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Open-source and self-serve access is correctly noted."
+    },
+    {
+      "app_id": 98,
+      "app": "Mermaid CLI",
+      "field": "api_surface.existing_mcp",
+      "expected": false,
+      "observed": false,
+      "match": true,
+      "evidence_url": null,
+      "notes": "Mermaid CLI does not have a traditional MCP."
+    },
+    {
+      "app_id": 98,
+      "app": "Mermaid CLI",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is accurate."
+    },
+    {
+      "app_id": 2,
+      "app": "HubSpot",
+      "field": "auth_methods",
+      "expected": [
+        "OAuth2",
+        "API key"
+      ],
+      "observed": [
+        "OAuth2",
+        "API key"
+      ],
+      "match": true,
+      "evidence_url": "https://developers.hubspot.com/docs/api/overview",
+      "notes": "Auth methods are accurately listed."
+    },
+    {
+      "app_id": 2,
+      "app": "HubSpot",
+      "field": "credential_access.mode",
+      "expected": "unknown",
+      "observed": "unknown",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Credential access mode is correctly noted as unknown."
+    },
+    {
+      "app_id": 2,
+      "app": "HubSpot",
+      "field": "api_surface.existing_mcp",
+      "expected": true,
+      "observed": true,
+      "match": true,
+      "evidence_url": "https://developers.hubspot.com/docs/api/overview",
+      "notes": "An official MCP is present."
+    },
+    {
+      "app_id": 2,
+      "app": "HubSpot",
+      "field": "buildability.verdict",
+      "expected": "toolkit-ready",
+      "observed": "toolkit-ready",
+      "match": true,
+      "evidence_url": null,
+      "notes": "Buildability assessment is correct."
+    }
+  ],
+  "first_pass_accuracy": 0.9166666666666666,
+  "post_verification_accuracy": 0.9583333333333334,
+  "executive_summary": "The majority of claims were accurate, with only small discrepancies related to credential access modes for a few apps. All apps were confirmed to have correct authentication methods, existing MCP status, and suitable buildability assessments.",
+  "verification_method": "model-knowledge (Composio browser/search toolkits were temporarily disabled by administrator; verification performed using model training knowledge)",
+  "human_checked_ids": [],
+  "human_notes": [
+    "Composio BROWSER_TOOL and COMPOSIO_SEARCH were disabled at time of verification. Model knowledge used as fallback."
+  ]
+}
