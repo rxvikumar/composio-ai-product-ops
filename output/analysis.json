@@ -1,7 +1,7 @@
 {
-  "n": 99,
+  "n": 100,
   "auth_distribution": {
-    "OAuth2": 77,
+    "OAuth2": 78,
     "API key": 88,
     "Bearer/token": 42,
     "Unknown": 12,
@@ -12,20 +12,20 @@
   },
   "credential_access": {
     "unknown": 18,
-    "self-serve-free": 61,
+    "self-serve-free": 62,
     "self-serve-paid": 15,
     "gated-needs-outreach": 3,
     "admin-approval": 1,
     "mixed": 1
   },
   "buildability": {
-    "toolkit-ready": 87,
+    "toolkit-ready": 88,
     "gated-needs-outreach": 5,
     "toolkit-ready-with-constraints": 7
   },
   "api_breadth": {
     "broad": 88,
-    "moderate": 6,
+    "moderate": 7,
     "narrow": 5
   },
   "official_mcp_count": 90,
@@ -74,7 +74,7 @@
     },
     {
       "category": "Marketing, Ads, Email and Social",
-      "count": 9,
+      "count": 10,
       "ready_pct": 100.0,
       "gated_pct": 0.0
     },

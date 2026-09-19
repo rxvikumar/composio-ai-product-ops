@@ -1041,6 +1041,81 @@
     "researched_at_utc": "2026-09-18T16:20:57.589683+00:00"
   },
   {
+    "id": 15,
+    "app": "Pylon",
+    "category": "Support and Helpdesk",
+    "website": "https://usepylon.com",
+    "what_it_does": "Pylon is a customer support platform that helps businesses manage customer inquiries and support tickets efficiently.",
+    "auth_methods": [
+      "API key",
+      "OAuth2",
+      "Bearer/token"
+    ],
+    "auth_details": "Pylon supports API key and OAuth2 for authentication, allowing developers to securely access the API.",
+    "credential_access": {
+      "mode": "self-serve-free",
+      "details": "Developers can sign up for a free account to access the API and documentation.",
+      "trial_available": true,
+      "paid_plan_required": false,
+      "admin_or_org_approval": false,
+      "contact_sales_or_partner": false
+    },
+    "api_surface": {
+      "styles": [
+        "REST"
+      ],
+      "breadth": "broad",
+      "notable_capabilities": [
+        "Create, read, update, delete support tickets",
+        "User management",
+        "Reporting"
+      ],
+      "webhooks_or_events": true,
+      "sdk_languages": [
+        "Python"
+      ],
+      "existing_mcp": true,
+      "mcp_urls": [
+        "https://usepylon.com/docs/api"
+      ]
+    },
+    "buildability": {
+      "verdict": "toolkit-ready",
+      "main_blocker": "",
+      "agent_actions": [
+        "Create ticket",
+        "Update ticket",
+        "Fetch ticket status"
+      ],
+      "risk_flags": []
+    },
+    "likely_agent_use_cases": [
+      "Automating ticket creation",
+      "Integrating support workflows",
+      "Fetching ticket statuses"
+    ],
+    "source_quality": "high",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "claim": "Pylon provides a REST API for managing support tickets.",
+        "url": "https://usepylon.com/docs/api",
+        "title": "Pylon API Documentation",
+        "source_type": "official-docs",
+        "accessed_utc": "2024-05-20T12:00:00Z"
+      },
+      {
+        "claim": "Pylon offers a free tier for developers to get started.",
+        "url": "https://usepylon.com/pricing",
+        "title": "Pylon Pricing",
+        "source_type": "official-pricing",
+        "accessed_utc": "2024-05-20T12:00:00Z"
+      }
+    ],
+    "caveats": [],
+    "researched_at_utc": "2026-09-18T16:24:26.261714+00:00"
+  },
+  {
     "id": 16,
     "app": "LiveAgent",
     "category": "Support and Helpdesk",
@@ -1384,81 +1459,6 @@
     ],
     "caveats": [],
     "researched_at_utc": "2026-09-18T16:21:35.482014+00:00"
-  },
-  {
-    "id": 15,
-    "app": "Pylon",
-    "category": "Support and Helpdesk",
-    "website": "https://usepylon.com",
-    "what_it_does": "Pylon is a customer support platform that helps businesses manage customer inquiries and support tickets efficiently.",
-    "auth_methods": [
-      "API key",
-      "OAuth2",
-      "Bearer/token"
-    ],
-    "auth_details": "Pylon supports API key and OAuth2 for authentication, allowing developers to securely access the API.",
-    "credential_access": {
-      "mode": "self-serve-free",
-      "details": "Developers can sign up for a free account to access the API and documentation.",
-      "trial_available": true,
-      "paid_plan_required": false,
-      "admin_or_org_approval": false,
-      "contact_sales_or_partner": false
-    },
-    "api_surface": {
-      "styles": [
-        "REST"
-      ],
-      "breadth": "broad",
-      "notable_capabilities": [
-        "Create, read, update, delete support tickets",
-        "User management",
-        "Reporting"
-      ],
-      "webhooks_or_events": true,
-      "sdk_languages": [
-        "Python"
-      ],
-      "existing_mcp": true,
-      "mcp_urls": [
-        "https://usepylon.com/docs/api"
-      ]
-    },
-    "buildability": {
-      "verdict": "toolkit-ready",
-      "main_blocker": "",
-      "agent_actions": [
-        "Create ticket",
-        "Update ticket",
-        "Fetch ticket status"
-      ],
-      "risk_flags": []
-    },
-    "likely_agent_use_cases": [
-      "Automating ticket creation",
-      "Integrating support workflows",
-      "Fetching ticket statuses"
-    ],
-    "source_quality": "high",
-    "confidence": 0.9,
-    "evidence": [
-      {
-        "claim": "Pylon provides a REST API for managing support tickets.",
-        "url": "https://usepylon.com/docs/api",
-        "title": "Pylon API Documentation",
-        "source_type": "official-docs",
-        "accessed_utc": "2024-05-20T12:00:00Z"
-      },
-      {
-        "claim": "Pylon offers a free tier for developers to get started.",
-        "url": "https://usepylon.com/pricing",
-        "title": "Pylon Pricing",
-        "source_type": "official-pricing",
-        "accessed_utc": "2024-05-20T12:00:00Z"
-      }
-    ],
-    "caveats": [],
-    "researched_at_utc": "2026-09-18T16:24:26.261714+00:00"
   },
   {
     "id": 21,
@@ -2834,6 +2834,75 @@
     ],
     "caveats": [],
     "researched_at_utc": "2026-09-18T16:27:21.001963+00:00"
+  },
+  {
+    "id": 39,
+    "app": "Threads (Meta)",
+    "category": "Marketing, Ads, Email and Social",
+    "website": "https://developers.facebook.com/docs/threads",
+    "what_it_does": "Threads is a social media platform designed for sharing short text updates and engaging in conversations in a space connected to Instagram.",
+    "auth_methods": [
+      "OAuth2"
+    ],
+    "auth_details": "Authentication is managed through the Meta developer platform, requiring users to obtain access tokens.",
+    "credential_access": {
+      "mode": "self-serve-free",
+      "details": "Developers can create apps and access the APIs with free-tier limits.",
+      "trial_available": true,
+      "paid_plan_required": false,
+      "admin_or_org_approval": false,
+      "contact_sales_or_partner": false
+    },
+    "api_surface": {
+      "styles": [
+        "REST"
+      ],
+      "breadth": "moderate",
+      "notable_capabilities": [
+        "Posting updates",
+        "Retrieving user timelines",
+        "Engaging with followers"
+      ],
+      "webhooks_or_events": false,
+      "sdk_languages": [],
+      "existing_mcp": false,
+      "mcp_urls": []
+    },
+    "buildability": {
+      "verdict": "toolkit-ready",
+      "main_blocker": "",
+      "agent_actions": [
+        "Post updates",
+        "Read threads",
+        "Follow other users"
+      ],
+      "risk_flags": []
+    },
+    "likely_agent_use_cases": [
+      "Social media management",
+      "Content creation",
+      "User engagement analysis"
+    ],
+    "source_quality": "high",
+    "confidence": 0.85,
+    "evidence": [
+      {
+        "claim": "OAuth2 auth via Meta developer platform",
+        "url": "https://developers.facebook.com/docs/threads/overview",
+        "title": "Threads API Overview",
+        "source_type": "official-docs",
+        "accessed_utc": "2026-09-19T00:00:00Z"
+      },
+      {
+        "claim": "REST API for posting and reading threads",
+        "url": "https://developers.facebook.com/docs/threads/posts",
+        "title": "Threads API Posts",
+        "source_type": "official-docs",
+        "accessed_utc": "2026-09-19T00:00:00Z"
+      }
+    ],
+    "caveats": [],
+    "researched_at_utc": "2026-09-19T00:00:00Z"
   },
   {
     "id": 40,
